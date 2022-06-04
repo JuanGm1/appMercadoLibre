@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="styles.css" rel="stylesheet"/>
+    <title>Prueba API</title>
+</head>
+<body>
+
+    <div id="header">
+        <label for="Buscar">Buscar:</label><br/>
+        <input type="text" id="search" name="search" 
+        placeholder="Escribe el nombre del producto" required="true"/><br/>
+        <button id='buscar'onclick="buscar(search.value)">Mostrar</button>
+    </div>
+   
+    <div id="app"></div>
+    <script>
+
+        const API_URL = 'https://api.mercadolibre.com'
+        const xhr = new XMLHttpRequest();
+
+        function buscar(product){
+            xhr.addEventListener("load",onRequestHandler);
+            xhr.open('GET',`${API_URL}/sites/MCO/search?q=${product}`,true);
+            xhr.send();
+        }
+
+        function onRequestHandler(){
+            if(this.readyState == 4 && this.status == 200){
+            const data = JSON.parse(this.response);
+            const HTMLResponse = document.querySelector('#app');
+            //console.log(data);
+            const tpl = data.results.map((results) => `<li>Producto: ${results.title}</li><li>Precio: ${results.price}</li>
+            <li><img src=${results.thumbnail} width="200" height="200"/></li>`);
+            HTMLResponse.innerHTML = `<ul>${tpl}</ul>`
+            }
+        }
+
+    </script>
+</body>
+</html>
